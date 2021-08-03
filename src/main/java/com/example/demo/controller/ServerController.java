@@ -39,7 +39,7 @@ public class ServerController {
     private static final String IdPrefix = "gamedo-";
     private static final AtomicLong IdCounter = new AtomicLong(1);
     @Value("${app.entity.count}")
-    private final int entityCount = 1000;
+    private int entityCount = 1000;
 
     private final DbDataMongoTemplate dbDataMongoTemplate;
     private final MongoTemplate mongoTemplate;
