@@ -16,6 +16,7 @@ import org.gamedo.gameloop.functions.IGameLoopEventBusFunction;
 import org.gamedo.gameloop.functions.IGameLoopTickManagerFunction;
 import org.gamedo.gameloop.interfaces.IGameLoop;
 import org.gamedo.persistence.core.DbDataMongoTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +38,8 @@ public class ServerController {
     private static final AtomicBoolean LoginSwitch = new AtomicBoolean(false);
     private static final String IdPrefix = "gamedo-";
     private static final AtomicLong IdCounter = new AtomicLong(1);
-    private static final int EntityCount = 10000;
+    @Value("${app.entity.count}")
+    private final int entityCount = 1000;
 
     private final DbDataMongoTemplate dbDataMongoTemplate;
     private final MongoTemplate mongoTemplate;
@@ -51,11 +53,11 @@ public class ServerController {
     @RequestMapping("/init")
     public Map<Boolean, Long> init() {
 
-
+        LoginSwitch.set(false);
         IdCounter.set(1);
         mongoTemplate.dropCollection(EntityDbPlayer.class);
 
-        final CompletableFuture<Boolean>[] futures = IntStream.rangeClosed(1, EntityCount)
+        final CompletableFuture<Boolean>[] futures = IntStream.rangeClosed(1, entityCount)
                 .mapToObj(i -> IdPrefix + i)
                 .map(id -> Gamedo.io().selectNext().submit(gameLoop -> this.generatePlayer(gameLoop, id)))
                 .toArray(CompletableFuture[]::new);
@@ -121,13 +123,13 @@ public class ServerController {
     @Tick(delay = 0, tick = 1, timeUnit = TimeUnit.SECONDS)
     private boolean simulateLogin(Long currentTime, Long lastTriggerTime)
     {
-        if (!LoginSwitch.get() || IdCounter.get() > EntityCount) {
+        if (!LoginSwitch.get() || IdCounter.get() > entityCount) {
             return false;
         }
 
         log.info(MyMarkers.Login, "模拟一批登录");
         //每秒最多登录100个玩家
-        for (int i = 1; i < 100 && IdCounter.get() <= EntityCount; i++) {
+        for (int i = 1; i < 100 && IdCounter.get() <= entityCount; i++) {
             final String id = IdPrefix + IdCounter.getAndIncrement();
             final EventGreeting event = new EventGreeting("hello " + id);
             final IGameLoop worker = Gamedo.worker().selectNext();

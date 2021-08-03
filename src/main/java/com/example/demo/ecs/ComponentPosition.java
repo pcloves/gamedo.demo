@@ -47,6 +47,7 @@ public class ComponentPosition extends Component<EntityPlayer> {
         //这里不太优雅
         final DbDataMongoTemplate mongoTemplate = Gamedo.context().getBean(DbDataMongoTemplate.class);
 
+        //实际上，存盘逻辑的职责也不应该分散于各个组件，而是应该有一个模块统一管理，这里是为了演示
         mongoTemplate.updateFirstAsync(dbData)
                 .thenAccept(r -> log.info(MyMarkers.Entity, "save finish, entity:{}, result:{}", getOwner().getId(), r));
     }

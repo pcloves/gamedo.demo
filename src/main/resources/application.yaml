@@ -8,3 +8,12 @@ management:
     web:
       exposure:
         include: '*'
+
+server:
+  port: 7273
+
+gamedo:
+  metrics:
+    enable: true
+
+app.entity.count: 2000
