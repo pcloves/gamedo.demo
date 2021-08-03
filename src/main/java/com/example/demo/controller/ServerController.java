@@ -37,7 +37,7 @@ public class ServerController {
     private static final AtomicBoolean LoginSwitch = new AtomicBoolean(false);
     private static final String IdPrefix = "gamedo-";
     private static final AtomicLong IdCounter = new AtomicLong(1);
-    private static final int EntityCount = 10;
+    private static final int EntityCount = 10000;
 
     private final DbDataMongoTemplate dbDataMongoTemplate;
     private final MongoTemplate mongoTemplate;
@@ -111,8 +111,9 @@ public class ServerController {
         return entityManager.map(manager -> {
 
             new HashMap<>(manager.getEntityMap())
-                    .forEach((key, value) -> manager.unregisterEntity(key)
-                    .ifPresent(i -> log.info("模拟下线成功, entity:{}", i)));
+                    .forEach((key, value) ->
+                            manager.unregisterEntity(key)
+                                    .ifPresent(i -> log.info("模拟下线成功, entity:{}", i)));
             return true;
         }).orElse(false);
     }
