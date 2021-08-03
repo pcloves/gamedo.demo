@@ -1,0 +1,10 @@
+debug: off
+logging:
+  level:
+    org.gamedo : info
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
