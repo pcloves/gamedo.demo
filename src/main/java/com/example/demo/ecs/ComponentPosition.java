@@ -11,7 +11,7 @@ import org.gamedo.annotation.Tick;
 import org.gamedo.ecs.Component;
 import org.gamedo.gameloop.components.eventbus.event.EventRegisterEntityPost;
 import org.gamedo.gameloop.components.eventbus.event.EventUnregisterEntityPre;
-import org.gamedo.persistence.core.DbDataMongoTemplate;
+import org.gamedo.persistence.GamedoMongoTemplate;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
@@ -45,10 +45,10 @@ public class ComponentPosition extends Component<EntityPlayer> {
         }
 
         //这里不太优雅
-        final DbDataMongoTemplate mongoTemplate = Gamedo.context().getBean(DbDataMongoTemplate.class);
+        final GamedoMongoTemplate mongoTemplate = Gamedo.context().getBean(GamedoMongoTemplate.class);
 
         //实际上，存盘逻辑的职责也不应该分散于各个组件，而是应该有一个模块统一管理，这里是为了演示
-        mongoTemplate.updateFirstAsync(dbData)
+        mongoTemplate.updateFirstAsync(dbData, Gamedo.io())
                 .thenAccept(r -> log.info(MyMarkers.Entity, "save finish, entity:{}, result:{}", getOwner().getId(), r));
     }
 
@@ -67,8 +67,8 @@ public class ComponentPosition extends Component<EntityPlayer> {
     private void eventUnregisterEntityPre(EventUnregisterEntityPre event) {
         //实际上，玩家下线时的存盘职责不应该隶属于每个Component组件，这里只是为了演示
         if (event.getEntityId().equals(getOwner().getId())) {
-            final DbDataMongoTemplate mongoTemplate = Gamedo.context().getBean(DbDataMongoTemplate.class);
-            mongoTemplate.saveAsync(dbData)
+            final GamedoMongoTemplate mongoTemplate = Gamedo.context().getBean(GamedoMongoTemplate.class);
+            mongoTemplate.saveAsync(dbData, Gamedo.io())
                     .thenAccept(r -> log.info(MyMarkers.Entity, "save finish before offline, entity:{}, result:{}", getOwner().getId(), r));
         }
     }
