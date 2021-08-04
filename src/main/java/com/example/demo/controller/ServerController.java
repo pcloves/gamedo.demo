@@ -15,9 +15,8 @@ import org.gamedo.gameloop.functions.IGameLoopEntityManagerFunction;
 import org.gamedo.gameloop.functions.IGameLoopEventBusFunction;
 import org.gamedo.gameloop.functions.IGameLoopTickManagerFunction;
 import org.gamedo.gameloop.interfaces.IGameLoop;
-import org.gamedo.persistence.core.DbDataMongoTemplate;
+import org.gamedo.persistence.GamedoMongoTemplate;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,12 +40,10 @@ public class ServerController {
     @Value("${app.entity.count}")
     private int entityCount = 1000;
 
-    private final DbDataMongoTemplate dbDataMongoTemplate;
-    private final MongoTemplate mongoTemplate;
+    private final GamedoMongoTemplate gamedoMongoTemplate;
 
-    public ServerController(DbDataMongoTemplate dbDataMongoTemplate, MongoTemplate mongoTemplate) {
-        this.dbDataMongoTemplate = dbDataMongoTemplate;
-        this.mongoTemplate = mongoTemplate;
+    public ServerController(GamedoMongoTemplate gamedoMongoTemplate) {
+        this.gamedoMongoTemplate = gamedoMongoTemplate;
     }
 
     @SuppressWarnings("unchecked")
@@ -55,7 +52,7 @@ public class ServerController {
 
         LoginSwitch.set(false);
         IdCounter.set(1);
-        mongoTemplate.dropCollection(EntityDbPlayer.class);
+        gamedoMongoTemplate.dropCollection(EntityDbPlayer.class);
 
         final CompletableFuture<Boolean>[] futures = IntStream.rangeClosed(1, entityCount)
                 .mapToObj(i -> IdPrefix + i)
@@ -100,8 +97,8 @@ public class ServerController {
         final EntityDbPlayer entityDbPlayer = new EntityDbPlayer(entityId, null);
         entityDbPlayer.addComponentDbData(new ComponentDbPosition(1, 1));
 
-        log.info(MyMarkers.Load, "save player:{}", entityDbPlayer);
-        dbDataMongoTemplate.save(entityDbPlayer);
+        log.info(MyMarkers.DB, "save player:{}", entityDbPlayer);
+        gamedoMongoTemplate.save(entityDbPlayer);
 
         return true;
     }
@@ -147,12 +144,12 @@ public class ServerController {
 
     private IEntity loadEntity(String id) {
 
-        final EntityDbPlayer player = mongoTemplate.findById(id, EntityDbPlayer.class);
+        final EntityDbPlayer player = gamedoMongoTemplate.findById(id, EntityDbPlayer.class);
 
         EntityPlayer entity = new EntityPlayer(id, player);
         entity.addComponent(ComponentPosition.class, new ComponentPosition(entity));
 
-        log.info(MyMarkers.Load, "加载entity, entity:{}", entity);
+        log.info(MyMarkers.DB, "加载entity, entity:{}", entity);
         return entity;
     }
 }
