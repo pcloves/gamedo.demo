@@ -1,4 +1,4 @@
-package com.example.demo.persistence;
+package org.gamedo.demo.persistence;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

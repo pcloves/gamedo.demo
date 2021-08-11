@@ -1,21 +1,22 @@
-package com.example.demo.controller;
+package org.gamedo.demo.controller;
 
-import com.example.demo.ecs.EntityPlayer;
-import com.example.demo.ecs.ComponentPosition;
-import com.example.demo.event.EventGreeting;
-import com.example.demo.logging.MyMarkers;
-import com.example.demo.persistence.ComponentDbPosition;
-import com.example.demo.persistence.EntityDbPlayer;
-import lombok.extern.slf4j.Slf4j;
+import org.gamedo.demo.ecs.ComponentPosition;
+import org.gamedo.demo.ecs.EntityPlayer;
+import org.gamedo.demo.event.EventGreeting;
+import org.gamedo.demo.logging.MyMarkers;
+import org.gamedo.demo.persistence.ComponentDbPosition;
+import org.gamedo.demo.persistence.EntityDbPlayer;
+import lombok.extern.log4j.Log4j2;
 import org.gamedo.Gamedo;
 import org.gamedo.annotation.Tick;
 import org.gamedo.ecs.interfaces.IEntity;
 import org.gamedo.gameloop.components.entitymanager.interfaces.IGameLoopEntityManager;
-import org.gamedo.gameloop.functions.IGameLoopEntityManagerFunction;
-import org.gamedo.gameloop.functions.IGameLoopEventBusFunction;
-import org.gamedo.gameloop.functions.IGameLoopTickManagerFunction;
 import org.gamedo.gameloop.interfaces.IGameLoop;
+import org.gamedo.logging.Markers;
 import org.gamedo.persistence.GamedoMongoTemplate;
+import org.gamedo.util.function.IGameLoopEntityManagerFunction;
+import org.gamedo.util.function.IGameLoopEventBusFunction;
+import org.gamedo.util.function.IGameLoopTickManagerFunction;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @SuppressWarnings({"unused", "FieldMayBeFinal"})
-@Slf4j
+@Log4j2
 @RestController("/")
 public class ServerController {
 
@@ -106,13 +107,15 @@ public class ServerController {
     private boolean unregisterEntity(IGameLoop gameLoop) {
 
         final Optional<IGameLoopEntityManager> entityManager = gameLoop.getComponent(IGameLoopEntityManager.class);
+        final String gameLoopId = gameLoop.getId();
 
         return entityManager.map(manager -> {
-
             new HashMap<>(manager.getEntityMap())
-                    .forEach((key, value) ->
-                            manager.unregisterEntity(key)
-                                    .ifPresent(i -> log.info("模拟下线成功, entity:{}", i)));
+                    .entrySet()
+                    .stream()
+                    .filter(entry -> entry.getValue() instanceof EntityPlayer)
+                    .forEach(entry -> manager.unregisterEntity(entry.getKey())
+                            .ifPresent(entity -> log.info(Markers.GameLoop, "模拟下线成功, entity:{}", entity)));
             return true;
         }).orElse(false);
     }
@@ -128,7 +131,7 @@ public class ServerController {
         //每秒最多登录100个玩家
         for (int i = 1; i < 100 && IdCounter.get() <= entityCount; i++) {
             final String id = IdPrefix + IdCounter.getAndIncrement();
-            final EventGreeting event = new EventGreeting("hello " + id);
+            final EventGreeting event = new EventGreeting(id, "hello " + id);
             final IGameLoop worker = Gamedo.worker().selectNext();
 
             //模拟使用io线程加载entity

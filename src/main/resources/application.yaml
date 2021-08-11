@@ -1,7 +1,7 @@
 debug: off
 logging:
   level:
-    org.gamedo : info
+    org.gamedo : debug
 
 management:
   endpoints:

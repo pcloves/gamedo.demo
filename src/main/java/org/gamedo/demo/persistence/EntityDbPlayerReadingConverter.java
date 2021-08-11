@@ -1,4 +1,4 @@
-package com.example.demo.persistence;
+package org.gamedo.demo.persistence;
 
 import org.gamedo.persistence.config.MongoConfiguration;
 import org.gamedo.persistence.converter.AbstractEntityDbDataReadingConverter;

@@ -1,4 +1,4 @@
-package com.example.demo.event;
+package org.gamedo.demo.event;
 
 import lombok.Value;
 import org.gamedo.gameloop.components.eventbus.interfaces.IEvent;

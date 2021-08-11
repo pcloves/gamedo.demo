@@ -1,7 +1,7 @@
-package com.example.demo.logging;
+package org.gamedo.demo.logging;
 
+import org.apache.logging.log4j.Marker;
 import org.gamedo.logging.Markers;
-import org.slf4j.Marker;
 
 public class MyMarkers {
     public static final Marker Login = Markers.of("login");

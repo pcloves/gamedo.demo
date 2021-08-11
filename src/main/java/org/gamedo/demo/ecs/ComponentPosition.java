@@ -1,9 +1,9 @@
-package com.example.demo.ecs;
+package org.gamedo.demo.ecs;
 
-import com.example.demo.event.EventGreeting;
-import com.example.demo.logging.MyMarkers;
-import com.example.demo.persistence.ComponentDbPosition;
-import lombok.extern.slf4j.Slf4j;
+import org.gamedo.demo.event.EventGreeting;
+import org.gamedo.demo.logging.MyMarkers;
+import org.gamedo.demo.persistence.ComponentDbPosition;
+import lombok.extern.log4j.Log4j2;
 import org.gamedo.Gamedo;
 import org.gamedo.annotation.Cron;
 import org.gamedo.annotation.Subscribe;
@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("unused")
-@Slf4j
+@Log4j2
 public class ComponentPosition extends Component<EntityPlayer> {
 
     private final ComponentDbPosition dbData;
@@ -28,7 +28,7 @@ public class ComponentPosition extends Component<EntityPlayer> {
         dbData = owner.entityDbPlayer.getComponentDbData(ComponentDbPosition.class);
     }
 
-    @Tick(delay = 0, tick = 50)
+    @Tick(delay = 0, tick = 50, scheduleWithFixedDelay = false)
     private void tick(Long currentMilliSecond, Long lastMilliSecond) {
         dbData.setX(ThreadLocalRandom.current().nextInt(100));
         dbData.setY(ThreadLocalRandom.current().nextInt(100));
@@ -37,7 +37,7 @@ public class ComponentPosition extends Component<EntityPlayer> {
         dbData.setDirty("y", dbData.getY());
     }
 
-    @Tick(delay = 0, tick = 10, timeUnit = TimeUnit.SECONDS)
+    @Tick(delay = 0, tick = 10, timeUnit = TimeUnit.SECONDS, scheduleWithFixedDelay = false)
     private void save(Long currentTime, Long lastTriggerTime) {
 
         if (!dbData.isDirty()) {
@@ -69,7 +69,10 @@ public class ComponentPosition extends Component<EntityPlayer> {
         if (event.getEntityId().equals(getOwner().getId())) {
             final GamedoMongoTemplate mongoTemplate = Gamedo.context().getBean(GamedoMongoTemplate.class);
             mongoTemplate.saveAsync(dbData, Gamedo.io())
-                    .thenAccept(r -> log.info(MyMarkers.Entity, "save finish before offline, entity:{}, result:{}", getOwner().getId(), r));
+                    .thenAccept(r -> log.info(MyMarkers.Entity,
+                            "save finish before offline, entity:{}, result:{}",
+                            getOwner().getId(),
+                            r));
         }
     }
 
@@ -80,6 +83,8 @@ public class ComponentPosition extends Component<EntityPlayer> {
 
     @Subscribe
     private void eventHello(EventGreeting event) {
-        log.info(MyMarkers.Entity, "receive greeting:{}", event.content);
+        if (event.getId().equals(getOwner().getId())) {
+            log.info(MyMarkers.Entity, "receive greeting:{}", event);
+        }
     }
 }

@@ -1,11 +1,11 @@
-package com.example.demo.ecs;
+package org.gamedo.demo.ecs;
 
-import com.example.demo.persistence.EntityDbPlayer;
-import lombok.extern.slf4j.Slf4j;
+import org.gamedo.demo.persistence.EntityDbPlayer;
+import lombok.extern.log4j.Log4j2;
 import org.gamedo.ecs.Entity;
 
 @SuppressWarnings("unused")
-@Slf4j
+@Log4j2
 public class EntityPlayer extends Entity {
 
     protected final EntityDbPlayer entityDbPlayer;
