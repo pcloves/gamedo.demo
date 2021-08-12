@@ -11,8 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @Document("player")
 @AllArgsConstructor
-@ClassMetaIgnore
-public class ComponentDbPosition extends ComponentDbData
+public class ComponentDbPositionWithClassMeta extends ComponentDbData
 {
     private int x;
     private int y;
