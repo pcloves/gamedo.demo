@@ -28,7 +28,7 @@ public class ComponentPosition extends Component<EntityPlayer> {
         dbData = owner.entityDbPlayer.getComponentDbData(ComponentDbPosition.class);
     }
 
-    @Tick(delay = 0, tick = 50, scheduleWithFixedDelay = false)
+    @Tick(delay = 0, tick = 50)
     private void tick(Long currentMilliSecond, Long lastMilliSecond) {
         dbData.setX(ThreadLocalRandom.current().nextInt(100));
         dbData.setY(ThreadLocalRandom.current().nextInt(100));
@@ -37,8 +37,8 @@ public class ComponentPosition extends Component<EntityPlayer> {
         dbData.setDirty("y", dbData.getY());
     }
 
-    @Tick(delay = 0, tick = 10, timeUnit = TimeUnit.SECONDS, scheduleWithFixedDelay = false)
-    private void save(Long currentTime, Long lastTriggerTime) {
+    @Tick(delay = 0, tick = 10, timeUnit = TimeUnit.SECONDS)
+    private void tickSave(Long currentTime, Long lastTriggerTime) {
 
         if (!dbData.isDirty()) {
             return;
@@ -76,13 +76,13 @@ public class ComponentPosition extends Component<EntityPlayer> {
         }
     }
 
-    @Cron("@daily")
-    private void cron(Long currentTime, Long lastTriggerTime) {
+    @Cron("*/10 * * * * *")
+    private void cron10Second(Long currentTime, Long lastTriggerTime) {
         log.info(MyMarkers.Entity, "it's a new day.");
     }
 
     @Subscribe
-    private void eventHello(EventGreeting event) {
+    private void eventGreeting(EventGreeting event) {
         if (event.getId().equals(getOwner().getId())) {
             log.info(MyMarkers.Entity, "receive greeting:{}", event);
         }

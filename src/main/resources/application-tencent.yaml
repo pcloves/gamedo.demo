@@ -1,0 +1,6 @@
+app.entity.count: 9999
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://Tetris:TetrisServer2019@172.17.0.3:27017/tongshanTest?connectTimeoutMS=60000&maxPoolSize=80&waitqueuemultiple=100&waitqueuetimeoutms=60000&safe=true&authSource=admin
