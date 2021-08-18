@@ -5,7 +5,6 @@ import org.gamedo.demo.ecs.EntityPlayer;
 import org.gamedo.demo.event.EventGreeting;
 import org.gamedo.demo.logging.MyMarkers;
 import org.gamedo.demo.persistence.ComponentDbPosition;
-import org.gamedo.demo.persistence.ComponentDbPositionWithClassMeta;
 import org.gamedo.demo.persistence.EntityDbPlayer;
 import lombok.extern.log4j.Log4j2;
 import org.gamedo.Gamedo;
@@ -98,7 +97,6 @@ public class ServerController {
 
         final EntityDbPlayer entityDbPlayer = new EntityDbPlayer(entityId, null);
         entityDbPlayer.addComponentDbData(new ComponentDbPosition(1, 1));
-        entityDbPlayer.addComponentDbData(new ComponentDbPositionWithClassMeta(1, 1));
 
         log.info(MyMarkers.DB, "save player:{}", entityDbPlayer);
         gamedoMongoTemplate.save(entityDbPlayer);

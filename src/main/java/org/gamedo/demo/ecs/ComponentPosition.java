@@ -1,13 +1,13 @@
 package org.gamedo.demo.ecs;
 
+import org.gamedo.demo.event.EventGreeting;
+import org.gamedo.demo.logging.MyMarkers;
+import org.gamedo.demo.persistence.ComponentDbPosition;
 import lombok.extern.log4j.Log4j2;
 import org.gamedo.Gamedo;
 import org.gamedo.annotation.Cron;
 import org.gamedo.annotation.Subscribe;
 import org.gamedo.annotation.Tick;
-import org.gamedo.demo.event.EventGreeting;
-import org.gamedo.demo.logging.MyMarkers;
-import org.gamedo.demo.persistence.ComponentDbPosition;
 import org.gamedo.ecs.Component;
 import org.gamedo.gameloop.components.eventbus.event.EventRegisterEntityPost;
 import org.gamedo.gameloop.components.eventbus.event.EventUnregisterEntityPre;
