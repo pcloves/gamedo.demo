@@ -1,4 +1,10 @@
+debug: off
 app.entity.count: 9999
+
+logging:
+  level:
+    root : info
+    org.gamedo : warn
 
 spring:
   data:

@@ -1,8 +1,5 @@
 package org.gamedo.demo.configuration;
 
-import io.micrometer.prometheus.PrometheusMeterRegistry;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
@@ -16,15 +13,4 @@ public class AppConfig {
     public MongoTemplate mongoTemplate(final MongoDatabaseFactory databaseFactory, final MongoConverter mongoConverter) {
         return new MongoTemplate(databaseFactory, mongoConverter);
     }
-
-    @Bean
-    InitializingBean forcePrometheusPostProcessor(BeanPostProcessor meterRegistryPostProcessor, PrometheusMeterRegistry registry) {
-        return () -> meterRegistryPostProcessor.postProcessAfterInitialization(registry, "");
-    }
-
-//    @Bean
-//    public GamedoMongoTemplate gamedoMongoTemplate(MongoTemplate mongoTemplate) {
-//        return new GamedoMongoTemplate(mongoTemplate);
-//    }
-
 }

@@ -90,6 +90,8 @@ public class ServerController {
         LoginSwitch.set(false);
         final CompletableFuture<List<Boolean>> future = Gamedo.worker().submitAll(this::unregisterEntity);
 
+        future.thenAccept(list -> IdCounter.set(1));
+
         return future.join();
     }
 

@@ -78,7 +78,11 @@ public class ComponentPosition extends Component<EntityPlayer> {
 
     @Cron("*/10 * * * * *")
     private void cron10Second(Long currentTime, Long lastTriggerTime) {
-        log.info(MyMarkers.Entity, "it's a new day.");
+        log.info(MyMarkers.Entity, "cron 10 second.");
+    }
+
+    @Cron("*/20 * * * * *")
+    private void cron20Second(Long currentTime, Long lastTriggerTime) {
     }
 
     @Subscribe
