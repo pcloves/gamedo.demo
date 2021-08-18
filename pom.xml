@@ -9,8 +9,7 @@
         <version>2.5.3</version>
     </parent>
 
-    <groupId>com.example</groupId>
-    <artifactId>demo1</artifactId>
+    <artifactId>demo</artifactId>
     <version>0.0.2-SNAPSHOT</version>
     <name>demo</name>
     <description>Demo project for Spring Boot</description>
@@ -30,7 +29,7 @@
         <dependency>
             <groupId>org.gamedo</groupId>
             <artifactId>gamedo-spring-boot-starter</artifactId>
-            <version>0.8.2-SNAPSHOT</version>
+            <version>0.8.3-SNAPSHOT</version>
         </dependency>
 
         <dependency>

@@ -1,14 +1,14 @@
 package org.gamedo.demo.controller;
 
+import lombok.extern.log4j.Log4j2;
+import org.gamedo.annotation.Tick;
+import org.gamedo.demo.configuration.DemoApp;
 import org.gamedo.demo.ecs.ComponentPosition;
 import org.gamedo.demo.ecs.EntityPlayer;
 import org.gamedo.demo.event.EventGreeting;
 import org.gamedo.demo.logging.MyMarkers;
 import org.gamedo.demo.persistence.ComponentDbPosition;
 import org.gamedo.demo.persistence.EntityDbPlayer;
-import lombok.extern.log4j.Log4j2;
-import org.gamedo.Gamedo;
-import org.gamedo.annotation.Tick;
 import org.gamedo.ecs.interfaces.IEntity;
 import org.gamedo.gameloop.components.entitymanager.interfaces.IGameLoopEntityManager;
 import org.gamedo.gameloop.interfaces.IGameLoop;
@@ -57,7 +57,7 @@ public class ServerController {
 
         final CompletableFuture<Boolean>[] futures = IntStream.rangeClosed(1, entityCount)
                 .mapToObj(i -> IdPrefix + i)
-                .map(id -> Gamedo.io().selectNext().submit(gameLoop -> this.generatePlayer(gameLoop, id)))
+                .map(id -> DemoApp.db().selectNext().submit(gameLoop -> this.generatePlayer(gameLoop, id)))
                 .toArray(CompletableFuture[]::new);
 
         final Map<Boolean, Long> map = CompletableFuture.allOf(futures)
@@ -72,7 +72,7 @@ public class ServerController {
     @RequestMapping("/login")
     public boolean serverStart() {
         LoginSwitch.set(true);
-        Gamedo.single().selectNext().submit(IGameLoopTickManagerFunction.register(this));
+        DemoApp.single().selectNext().submit(IGameLoopTickManagerFunction.register(this));
 
         return true;
     }
@@ -88,7 +88,7 @@ public class ServerController {
     public List<Boolean> serverShutdown() {
 
         LoginSwitch.set(false);
-        final CompletableFuture<List<Boolean>> future = Gamedo.worker().submitAll(this::unregisterEntity);
+        final CompletableFuture<List<Boolean>> future = DemoApp.worker().submitAll(this::unregisterEntity);
 
         future.thenAccept(list -> IdCounter.set(1));
 
@@ -134,10 +134,10 @@ public class ServerController {
         for (int i = 1; i < 100 && IdCounter.get() <= entityCount; i++) {
             final String id = IdPrefix + IdCounter.getAndIncrement();
             final EventGreeting event = new EventGreeting(id, "hello " + id);
-            final IGameLoop worker = Gamedo.worker().selectNext();
+            final IGameLoop worker = DemoApp.worker().selectNext();
 
             //模拟使用io线程加载entity
-            CompletableFuture.supplyAsync(() -> loadEntity(id), Gamedo.io())
+            CompletableFuture.supplyAsync(() -> loadEntity(id), DemoApp.db())
                     //加载完毕，将之安全发布到worker线程
                     .thenAccept(entity -> worker.submit(IGameLoopEntityManagerFunction.registerEntity(entity)))
                     //注册完毕，向其发送消息
