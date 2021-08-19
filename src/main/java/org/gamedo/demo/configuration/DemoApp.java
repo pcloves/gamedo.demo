@@ -7,6 +7,8 @@ import org.gamedo.gameloop.interfaces.IGameLoopGroup;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Component
 public class DemoApp extends Gamedo {
 
@@ -17,6 +19,7 @@ public class DemoApp extends Gamedo {
                 .gameLoopGroupId("dbs")
                 .gameLoopCount(Runtime.getRuntime().availableProcessors() * 10)
                 .gameLoopIdPrefix("db-")
+                .gameLoopIdCounter(new AtomicInteger(1))
                 .componentRegisters(GameLoopConfig.DEFAULT.getComponentRegisters())
                 .daemon(false)
                 .build()

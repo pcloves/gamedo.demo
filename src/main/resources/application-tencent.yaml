@@ -4,7 +4,11 @@ app.entity.count: 9999
 logging:
   level:
     root : info
-    org.gamedo : warn
+    org:
+      gamedo : warn
+      springframework:
+        data:
+          mongodb: warn
 
 spring:
   data:
