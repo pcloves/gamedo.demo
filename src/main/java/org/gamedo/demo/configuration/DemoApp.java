@@ -2,6 +2,7 @@ package org.gamedo.demo.configuration;
 
 import org.gamedo.Gamedo;
 import org.gamedo.configuration.GameLoopProperties;
+import org.gamedo.configuration.GamedoProperties;
 import org.gamedo.gameloop.GameLoopConfig;
 import org.gamedo.gameloop.interfaces.IGameLoopGroup;
 import org.springframework.context.ApplicationContext;
@@ -26,8 +27,8 @@ public class DemoApp extends Gamedo {
         );
     }
 
-    protected DemoApp(ApplicationContext applicationContext, GameLoopProperties gameLoopProperties) {
-        super(applicationContext, gameLoopProperties);
+    protected DemoApp(ApplicationContext applicationContext, GamedoProperties gamedoProperties, GameLoopProperties gameLoopProperties) {
+        super(applicationContext, gamedoProperties, gameLoopProperties);
     }
 
     public static IGameLoopGroup db() {
