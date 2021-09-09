@@ -16,7 +16,7 @@
 
     <properties>
         <gamedo-spring-boot-starter.version>0.8.3-SNAPSHOT</gamedo-spring-boot-starter.version>
-        <gamedo-persistence-spring-boot-starter.version>1.4.0-SNAPSHOT</gamedo-persistence-spring-boot-starter.version>
+        <gamedo-persistence-spring-boot-starter.version>1.5.0-SNAPSHOT</gamedo-persistence-spring-boot-starter.version>
     </properties>
 
     <dependencies>
